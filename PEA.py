@@ -1,3 +1,5 @@
+import time
+
 import matplotlib.pyplot as plt
 import numpy as np
 import scipy
@@ -36,7 +38,7 @@ def PEA(image, NIteration):
     i = 0
     gHat_i = g
 
-    lamb = 0.15
+    lamb = 0.65
     alpha = 1
 
     while i < NIteration:
@@ -67,12 +69,12 @@ def PEA(image, NIteration):
 
 if __name__ == "__main__":
     matInit = scipy.io.loadmat('Data/simuData.mat')
-    # matInit = scipy.io.loadmat('Data/realData.mat')
+    matInit = scipy.io.loadmat('Data/realData.mat')
     matInit = matInit['imag_f']
 
     matInit = matInit/np.abs(matInit).max()
 
-    PEType = 1
+    PEType = 3
     Noise = 100
 
     matInitBruit = Util.addNoise(matInit, SNR=Noise)
@@ -93,8 +95,10 @@ if __name__ == "__main__":
     plt.title(f"Defocused image (Type {PEType} phase error)")
     plt.colorbar()
 
-    matRec = PEA(matDefocus, 30)
+    t0 = time.time()
+    PEA(matDefocus, 30)
 
+    print(f"Execution time : {time.time()-t0}s")
     print(f"Initial image entropy : {Util.entropyCalculation(matInit)}")
     print(f"Defocused image entropy : {Util.entropyCalculation(matDefocus)}")
 

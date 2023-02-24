@@ -54,7 +54,7 @@ def windowingImage(centeredImage):
     return imageWindow
 
 
-def dGn_calcul(imageWindowed, version="v1"):
+def dGn_compute(imageWindowed, version="v1"):
     """
     Function that tries to calculate the gradient of an image across the azimuths
 

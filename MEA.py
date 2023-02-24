@@ -1,10 +1,11 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import scipy
+import time
 import Util
 
 
-def calculerPhi(betaList, M, k0):
+def computePhi(betaList, M, k0):
     """
     Calculates the filter to be used in the phaseCorrection() function.
 
@@ -29,7 +30,7 @@ def calculerPhi(betaList, M, k0):
     return phi
 
 
-def augmenterBetaI(signalToFocus, E, betaList, i, d, k0):
+def increaseBetaI(signalToFocus, E, betaList, i, d, k0):
     """
     Function increasing the value of the Beta coefficient of index i until it no longer minimises the entropy. The 
     function returns the minimum entropy obtained as well as the list of Betas containing the Beta that has been 
@@ -52,7 +53,7 @@ def augmenterBetaI(signalToFocus, E, betaList, i, d, k0):
         lamb = E
 
         betaList[i] += d
-        phi = calculerPhi(betaList, M, k0)
+        phi = computePhi(betaList, M, k0)
 
         E = Util.entropyCalculation(Util.phaseCorrection(signalToFocus, phi))
 
@@ -63,7 +64,7 @@ def augmenterBetaI(signalToFocus, E, betaList, i, d, k0):
     return E, betaList
 
 
-def diminuerBetaI(signalToFocus, E, betaList, i, d, k0):
+def decreaseBetaI(signalToFocus, E, betaList, i, d, k0):
     """
     Function that decreases the value of the Beta coefficient of index i until it no longer minimises the entropy. The
     function returns the minimum entropy obtained as well as the list of Betas containing the Beta that has been
@@ -86,7 +87,7 @@ def diminuerBetaI(signalToFocus, E, betaList, i, d, k0):
         lamb = E
 
         betaList[i] -= d
-        phi = calculerPhi(betaList, M, k0)
+        phi = computePhi(betaList, M, k0)
 
         E = Util.entropyCalculation(Util.phaseCorrection(signalToFocus, phi))
 
@@ -117,17 +118,17 @@ def minimiseEntropy(signalToFocus, betaList, i, d, k0):
     while d >= 2:
         start = betaList[i]
 
-        E, betaList = augmenterBetaI(signalToFocus, E, betaList, i, d, k0)
+        E, betaList = increaseBetaI(signalToFocus, E, betaList, i, d, k0)
 
         if betaList[i] == start:
-            E, betaList = diminuerBetaI(signalToFocus, E, betaList, i, d, k0)
+            E, betaList = decreaseBetaI(signalToFocus, E, betaList, i, d, k0)
 
         d /= 2
 
     return betaList
 
 
-def estimationBeta(signalToFocus, ordrePhi, k0):
+def estimateBeta(signalToFocus, ordrePhi, k0):
     """
     Function estimating the list of Beta coefficients allowing to reconstruct the image by minimising its Entropy and
     thus to perform its focus.
@@ -152,7 +153,7 @@ def estimationBeta(signalToFocus, ordrePhi, k0):
         i += 1
         d = 32
 
-        betaListe = minimiserEntropie(signalToFocus, betaListe, i, d, k0)
+        betaListe = minimiseEntropy(signalToFocus, betaListe, i, d, k0)
 
         betaI = betaListe[i]
         print(f"Fin du calcul pour l'ordre {i}, Beta[{i}] = {betaI[0]}")
@@ -175,9 +176,9 @@ def MEA(image):
 
     k0 = M//2
 
-    betaList = estimationBeta(imageFFT, 50, k0)
+    betaList = estimateBeta(imageFFT, 50, k0)
 
-    phi = calculerPhi(betaList, M, k0)
+    phi = computePhi(betaList, M, k0)
 
     plt.figure()
     plt.plot(-phi)
@@ -202,8 +203,8 @@ if __name__ == "__main__":
     # matInit = scipy.io.loadmat('Data/realData.mat')
     matInit = matInit['imag_f']
 
-    PEType = 1
-    Noise = 100
+    PEType = 2
+    Noise = -10
 
     matInitBruit = Util.addNoise(matInit, SNR=Noise)
     matDefocus = Util.defocus(matInitBruit, PEType)
@@ -222,7 +223,10 @@ if __name__ == "__main__":
     plt.title(f"Defocused image (Type {PEType} phase error)")
     plt.colorbar()
 
-    MEA(matDefocus)
+    t0 = time.time()
+    # MEA(matDefocus)
+
+    print(f"Execution time : {time.time()-t0}s")
 
     print(f"Initial image entropy : {Util.entropyCalculation(matInitBruit)}")
 
