@@ -103,7 +103,7 @@ def minimiseEntropy(signalToFocus, betaList, i, d, k0):
     Function searching for the i-th Beta coefficient to construct a filter to focus the SAR image.
 
     The algorithm used here is based on the article SAR Minimum-Entropy Autofocus Using an Adaptive-Order Polynomial
-    Model écrit par Junfeng Wang et Xingzhao Liu in 2006.
+    Model by Junfeng Wang and Xingzhao Liu in 2006.
 
     :param signalToFocus: Fourier transform in azimuth of the signal to be focused
     :param betaList: List containing the Beta already calculated and those to be calculated
@@ -134,7 +134,7 @@ def estimateBeta(signalToFocus, ordrePhi, k0):
     thus to perform its focus.
 
     The algorithm used here is based on the article SAR Minimum-Entropy Autofocus Using an Adaptive-Order Polynomial
-    Model écrit par Junfeng Wang et Xingzhao Liu in 2006.
+    Model by Junfeng Wang and Xingzhao Liu in 2006.
 
     :param signalToFocus: Fourier transform in azimuth of the signal to be focused
     :param ordrePhi: Maximum order of the polynomial allowing to approach the phases of the Focus filter
