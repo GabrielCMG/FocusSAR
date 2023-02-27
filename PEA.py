@@ -27,6 +27,9 @@ def SLambda(g, lamb):
 def PEA(image, NIteration):
     """
     Function that performs Phase Error Autofocus on a SAR image.
+    
+    The algorithm used here is based on the article Feature Preserving Autofocus Algorithm for Phase Error 
+    Correction of SAR Images by Haemin Lee, Chang-Sik Jung and Ki-Wan Kim.
 
     :param image: SAR image that need to be focused
     :param NIteration: Number of iterations the algorithm will perform
